@@ -56,13 +56,6 @@ namespace Company.Function
                     return;
                 }
 
-                // Check if the content type is a valid image
-                if (!FuncUtils.IsValidImageContentType(eventData.ContentType))
-                {
-                    _logger.LogInformation("Invalid contentType: {contentType}. Skipping processing.", eventData.ContentType);
-                    return;
-                }
-
                 // Log blob creation details
                 _logger.LogInformation("Blob Created: URL: {url}, ContentType: {contentType}", eventData.Url, eventData.ContentType);
 

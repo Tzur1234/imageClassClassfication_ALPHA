@@ -16,7 +16,7 @@ The solution utilizes OpenAI's deployed model on Azure, which integrates with Az
 - **Azure Cosmos DB**: Stores metadata extracted from the images, including classification results and other insights.
 
 ## How It Works
-1. **Upload Image**: An image is uploaded to Azure Blob Storage.  You can easily upload an image using the web app here: [Upload Image Web App](#).
+1. **Upload Image**: An image is uploaded to Azure Blob Storage.  You can easily upload an image using the web app here: [Upload Image Web App](https://imageclassification192.z39.web.core.windows.net).
 2. **Trigger Event**: The upload event triggers Azure Event Grid, which notifies an Azure Function.
 3. **Process Image**: The Azure Function sends the image to the OpenAI deployed model via Azure AI services for classification and analysis.
 4. **Store Metadata**: After processing, the image metadata, including classification results, is stored in Azure Cosmos DB.
