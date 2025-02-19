@@ -38,6 +38,31 @@ To run this project, follow these steps:
 3. Configure **Azure Functions** to handle the image processing pipeline.
 4. Set up **Azure Cosmos DB** to store the processed metadata.
 
+also
+
+1. **Install .NET 9 SDK**  
+   - Download and install the [**.NET 9 SDK**](https://dotnet.microsoft.com/download).
+
+2. **Install Azure Functions Core Tools**  
+   - Install the [Azure Functions Core Tools](https://learn.microsoft.com/en-us/azure/azure-functions/functions-run-local) to develop and test functions locally.
+
+3. **Set Up Local Settings**  
+   - In the root of the **backend** folder, create a `local.settings.json` file with the following structure:
+
+   ```json
+   {
+     "IsEncrypted": false,
+     "Values": {
+       "AzureWebJobsSecretStorageType": "files",
+       "AzureWebJobsStorage": "<Your Azure Storage connection string>",
+       "ContainerName": "upload",
+       "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
+       "AZURE_OPENAI_ENDPOINT": "<Your Azure OpenAI endpoint>",
+       "AZURE_OPENAI_KEY": "<Your Azure OpenAI key>",
+       "CosmosDbConnectionSetting": "<Your Cosmos DB connection string>"
+     }
+   }
+
 ## Additional Information
 For a detailed overview of the architecture, you can visit the official [Azure Architecture](https://learn.microsoft.com/en-us/azure/architecture/ai-ml/idea/intelligent-apps-image-processing) page.
 
