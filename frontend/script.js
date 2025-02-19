@@ -103,8 +103,7 @@ function handleUploadResponse(response, newFilename) {
 
 // Polls for the analysis result using the generated filename
 function pollForAnalysisResult(filename) {
-  // const analysisEndpoint = `https://your-analysis-endpoint.com/api/checkresult?filename=${filename}`; // Replace with your actual endpoint
-  const analysisEndpoint = `http://smartimageuploader.xyz?filename=${filename}`; // Replace with your actual endpoint
+  const analysisEndpoint = `http://smartimageuploader.xyz?filename=${filename}`; // Replace with your actual function endpoint
   let attempts = 0;
   const maxAttempts = 4;
   const interval = 4000; // 20 seconds

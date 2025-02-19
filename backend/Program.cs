@@ -6,8 +6,9 @@ using Company.Function;
 var builder = FunctionsApplication.CreateBuilder(args);
 
 
-// Register services for DI container
-builder.Services.AddSingleton<IImageDescriptionService, ImageDescriptionService>();
+
+builder.Services.AddSingleton<IImageDescriptionService, ImageDescriptionService>();// Register services for DI container
+builder.Services.AddSingleton<ICosmosDbService, CosmosDbService>(); // Register CosmosDB Service
 
 builder.ConfigureFunctionsWebApplication();
 

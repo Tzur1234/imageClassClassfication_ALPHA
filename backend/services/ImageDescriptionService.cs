@@ -27,7 +27,7 @@ namespace Company.Function
             _deploymentName = "gpt-4o";  // Could be moved to configuration as well if needed
         }
 
-        public async Task AnalyzeImageAsync(string imageUrl)
+        public async Task<string> AnalyzeImageAsync(string imageUrl)
         {
 
             // Initialize Azure OpenAI client
@@ -44,9 +44,12 @@ namespace Company.Function
 
             // Call the OpenAI model and await the response
             ChatCompletion chatCompletion = await chatClient.CompleteChatAsync(messages);
-
+            string analysisResult = chatCompletion.Content[0].Text;
+            
             // Log the result
-             _logger.LogInformation($"[ASSISTANT]: {chatCompletion.Content[0].Text}");
+            _logger.LogInformation($"[Image Process Result]: {analysisResult}");
+             return analysisResult;
+
         }
     }
 }

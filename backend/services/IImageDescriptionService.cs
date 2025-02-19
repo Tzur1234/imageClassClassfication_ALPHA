@@ -6,6 +6,6 @@ namespace Company.Function
     public interface IImageDescriptionService
     {
         // Define the contract for the method that analyzes an image
-        Task AnalyzeImageAsync(string imageUrl);
+        Task<string> AnalyzeImageAsync(string imageUrl);
     }
 }

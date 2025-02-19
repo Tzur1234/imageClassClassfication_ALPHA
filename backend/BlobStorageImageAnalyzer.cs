@@ -5,7 +5,9 @@ using System;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Azure.Messaging;
+using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Functions.Worker;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
@@ -17,11 +19,17 @@ namespace Company.Function
         private readonly ILogger<BlobStorageImageAnalyzer> _logger;
 
         private readonly IImageDescriptionService _imageDescriptionService;
+        private readonly ICosmosDbService _cosmosDbService;
 
-        public BlobStorageImageAnalyzer(ILogger<BlobStorageImageAnalyzer> logger, IImageDescriptionService imageDescriptionService)
+
+        public BlobStorageImageAnalyzer(ILogger<BlobStorageImageAnalyzer> logger,
+               IImageDescriptionService imageDescriptionService,
+               ICosmosDbService cosmosDbService,
+               IConfiguration configuration)
         {
             _logger = logger;
             _imageDescriptionService = imageDescriptionService;
+            _cosmosDbService = cosmosDbService;
         }
 
         [Function(nameof(BlobStorageImageAnalyzer))]
@@ -60,8 +68,16 @@ namespace Company.Function
                 _logger.LogInformation("Blob Created: URL: {url}, ContentType: {contentType}", eventData.Url, eventData.ContentType);
 
                 // Process the image asynchronously
-                // await Test2.RunAsync2(eventData.Url);
-                await _imageDescriptionService.AnalyzeImageAsync(eventData.Url);
+                string analysisResult = await _imageDescriptionService.AnalyzeImageAsync(eventData.Url);
+
+
+                // Store result in CosmosDB via DI service
+                string imageId = FuncUtils.ExtractFileNameFromUrl(eventData.Url);
+                await _cosmosDbService.UpsertAnalysisResultAsync(imageId, analysisResult);
+
+                _logger.LogInformation("Successfully stored analysis result in CosmosDB. Image ID: {imageId}, Analysis: {analysisResult}", imageId, analysisResult);
+
+
             }
             catch (Exception ex)
             {
