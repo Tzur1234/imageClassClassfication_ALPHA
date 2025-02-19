@@ -9,10 +9,22 @@
 <body>
   <div class="container">
     <h1>Upload Your Image for Analysis</h1>
+    
+    <!-- File Upload Input -->
     <input type="file" id="imageUpload" accept="image/*">
     <button id="uploadButton">Upload Image</button>
-    <div id="imagePreview"></div>
-    <div id="analysisResult"></div>
+
+    <!-- Image Preview -->
+    <div id="imagePreview" class="image-preview"></div>
+
+    <!-- Loader (Hidden by Default) -->
+    <div id="loadingSpinner" class="spinner-container" style="display: none;">
+      <div class="spinner"></div>
+      <p>Analyzing image...</p>
+    </div>
+
+    <!-- Analysis Result -->
+    <div id="analysisResult" class="analysis-result"></div>
   </div>
 
   <script src="script.js"></script>

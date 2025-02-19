@@ -11,13 +11,14 @@ function handleFileUpload() {
     return;
   }
 
-  // Validate file and proceed with uploading
   if (isValidFile(file)) {
     const newFilename = generateFilename(file);
     const formData = createFormData(file, newFilename);
-
-    // Show image preview
+    
     showImagePreview(file);
+    
+    // Show loading spinner
+    document.getElementById('loadingSpinner').style.display = 'block';
 
     // Upload the image
     uploadImage(formData, newFilename);
@@ -39,7 +40,6 @@ function isValidFile(file) {
 
   return true;
 }
-
 // Generates a new filename with timestamp and random string
 function generateFilename(file) {
   const timestamp = new Date().toISOString().replace(/[:.-]/g, ''); // Removing special characters for filename
@@ -60,15 +60,15 @@ function showImagePreview(file) {
   const imagePreview = document.getElementById('imagePreview');
   const img = document.createElement('img');
   img.src = URL.createObjectURL(file);
-  imagePreview.innerHTML = '';  // Clear previous preview
+  imagePreview.innerHTML = '';
   imagePreview.appendChild(img);
   imagePreview.style.display = 'block';
 }
 
-// Uploads the image to the backend and handles the response
+// Uploads the image to the backend
 function uploadImage(formData, newFilename) {
   const uploadUrl = 'https://imageclassificationfuncapp31.azurewebsites.net/api/FileUpload?code=SP8X45vdhGE6gTZ2vLwm4Okn2vmP5WTz-vgPEXvWeU9XAzFuM5YY7g==';
-  
+
   fetch(uploadUrl, {
     method: 'POST',
     body: formData
@@ -77,6 +77,7 @@ function uploadImage(formData, newFilename) {
   .catch(error => {
     console.error('Error uploading image:', error);
     alert('An error occurred while uploading the image.');
+    document.getElementById('loadingSpinner').style.display = 'none'; // Hide spinner
   });
 }
 
@@ -90,7 +91,7 @@ function handleUploadResponse(response, newFilename) {
     .then(data => {
       if (data && data.message === 'file uploaded successfully') {
         console.log('File uploaded successfully');
-        pollForAnalysisResult(newFilename);  // Start polling for analysis result
+        pollForAnalysisResult(newFilename);  // Start polling
       } else {
         throw new Error('Unexpected response when uploading image.');
       }
@@ -98,20 +99,22 @@ function handleUploadResponse(response, newFilename) {
     .catch(error => {
       console.error('Error parsing response:', error);
       alert('An error occurred while processing the response.');
+      document.getElementById('loadingSpinner').style.display = 'none'; // Hide spinner
     });
 }
 
-// Polls for the analysis result using the generated filename
+// Polls for the analysis result
 function pollForAnalysisResult(filename) {
-  const analysisEndpoint = `http://smartimageuploader.xyz?filename=${filename}`; // Replace with your actual function endpoint
+  const analysisEndpoint = `https://imageclassificationfuncapp31.azurewebsites.net/api/GetImageAnalysisResult?filename=${filename}`;
   let attempts = 0;
   const maxAttempts = 4;
-  const interval = 4000; // 20 seconds
+  const interval = 4000;
 
   const pollInterval = setInterval(() => {
     if (attempts >= maxAttempts) {
       clearInterval(pollInterval);
       alert('Max attempts reached. Analysis not completed.');
+      document.getElementById('loadingSpinner').style.display = 'none'; // Hide spinner
       return;
     }
 
@@ -125,7 +128,7 @@ function pollForAnalysisResult(filename) {
   }, interval);
 }
 
-// Handles the response of the polling request for analysis result
+// Handles the response of the polling request
 function handleAnalysisResponse(response, pollInterval) {
   if (!response.ok) {
     throw new Error('Error fetching analysis result.');
@@ -133,13 +136,14 @@ function handleAnalysisResponse(response, pollInterval) {
 
   response.json()
     .then(data => {
-      if (data && data.result) {
-        // If result found, stop polling
+      if (data) {
         clearInterval(pollInterval);
-        document.getElementById('analysisResult').innerHTML = `Analysis Result: ${data.result}`;
+        document.getElementById('analysisResult').innerHTML = `📊 <strong>Analysis Result:</strong> ${data.analysis}`;
         document.getElementById('analysisResult').style.display = 'block';
+        
+        // Hide loading spinner
+        document.getElementById('loadingSpinner').style.display = 'none';
       } else {
-        // If no result yet, continue polling
         console.log('No result yet. Retrying...');
       }
     })
