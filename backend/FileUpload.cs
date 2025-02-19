@@ -27,7 +27,7 @@ namespace Company.Function
             var blob = blobClient.GetBlobClient(file.FileName);
             await blob.UploadAsync(myBlob);
             _logger.LogInformation("file uploaded successfylly");
-            return new OkObjectResult("file uploaded successfylly");
+            return new OkObjectResult(new { message = "file uploaded successfully" });
         }
     }
 }
